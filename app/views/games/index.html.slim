@@ -6,6 +6,10 @@
           .label Time left:
           .content= humanize_duration(game.time_left)
 
+        .detail
+          .label Board:
+          .content= game.board
+
         .link-to-play
           = link_to "Play!", game_path(game.id)
   - else

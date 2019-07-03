@@ -18,4 +18,8 @@ class GamePresenter
     @game ||= @games.first
     @board = Board.make_board_from_str(@game.board)
   end
+
+  def points
+    @game.game_results.first.try(:points) || 0
+  end
 end

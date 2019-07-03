@@ -1,7 +1,11 @@
 .games.show
-  .time-left
+  .time-left.game-detail
     .label Time Left:
     .content= humanize_duration(@presenter.game.time_left)
+
+  .score.game-detail
+    .label Points:
+    .content= @presenter.points
 
   .board
     - @presenter.board.state.each do |line|
