@@ -90,7 +90,11 @@ class Board
 
       if matched
         if new_dict = dict[letter]
-          return true if search(new_dict, rest_of_word, [nx,ny], exclude_indices.push([nx,ny]))
+          if search(new_dict, rest_of_word, [nx,ny], exclude_indices.push([nx,ny]))
+            return true
+          else
+            exclude_indices.delete([nx,ny])
+          end
         end
       end
     end
