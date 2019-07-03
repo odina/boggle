@@ -5,5 +5,7 @@ Rails.application.routes.draw do
     end
   end
 
-  root to: "home#index"
+  resources :games, only: [:index, :show, :update]
+
+  root to: "games#index"
 end
