@@ -5,7 +5,9 @@
 ```
 1. Make sure you have ruby 2.5.5 installed (preferrably by rvm or rbenv)
 2. Run `bundle install`
-3. Run `bin/rails server`
+3. Run `bin/rake db:create`
+4. Run `bin/rake db:migrate`
+5. Run `bin/rails server`
 ```
 
 ### Running tests
