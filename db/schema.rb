@@ -12,7 +12,10 @@
 
 ActiveRecord::Schema.define(version: 2019_07_03_033323) do
 
-  create_table "games", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "games", force: :cascade do |t|
     t.string "token"
     t.integer "duration"
     t.string "board"

@@ -1,13 +1,13 @@
 class Game < ApplicationRecord
   attr_accessor :random, :points
 
-  validates_presence_of :duration, :random
+  validates_presence_of :duration, :random, on: :create
 
   before_create :generate_token
   before_create :generate_board
 
-  scope :fresh, -> { where("TIMESTAMPDIFF(SECOND, created_at, NOW()) < duration") }
-  scope :expired, -> { where("TIMESTAMPDIFF(SECOND, created_at, NOW()) >= duration") }
+  scope :fresh, -> { where("created_at >= NOW() - CONCAT(duration, 'seconds')::interval") }
+  scope :expired, -> { where("created_at < NOW() - CONCAT(duration, 'seconds')::interval") }
 
   def time_since_creation
     Time.now - self.created_at
