@@ -2,8 +2,8 @@ class PlayBoggle
   include Interactor
 
   def call
-    context.fail!(errors: "Game could not be found") unless game = context.game
-    context.fail!(errors: "Game has expired") if game.expired?
+    context.fail!(errors: "Game could not be found!") unless game = context.game
+    context.fail!(errors: "Game has expired!", redirect: true) if game.expired?
 
     board = Board.make_board_from_str(context.game.board)
     valid = false
@@ -24,6 +24,6 @@ class PlayBoggle
   private
 
   def game_result
-    @game_result ||= GameResult.find_or_create_by(game_id: context.game.id)
+    @game_result ||= context.game.game_results.find_or_create_by(game_id: context.game.id)
   end
 end

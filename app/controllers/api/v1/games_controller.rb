@@ -1,10 +1,6 @@
 class Api::V1::GamesController < Api::BaseController
   skip_before_action :verify_authenticity_token
 
-  def index
-    render json: { method: "index" }
-  end
-
   def create
     @game = Game.new(create_game_params)
 

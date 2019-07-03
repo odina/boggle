@@ -9,6 +9,8 @@ class Game < ApplicationRecord
   scope :fresh, -> { where("created_at >= NOW() - CONCAT(duration, 'seconds')::interval") }
   scope :expired, -> { where("created_at < NOW() - CONCAT(duration, 'seconds')::interval") }
 
+  has_many :game_results
+
   def time_since_creation
     Time.now - self.created_at
   end

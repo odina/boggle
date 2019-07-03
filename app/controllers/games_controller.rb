@@ -32,7 +32,11 @@ class GamesController < ApplicationController
       flash[:error] = answer.errors
     end
 
-    render :show
+    if answer.redirect
+      redirect_to root_path
+    else
+      render :show
+    end
   end
 
   private
