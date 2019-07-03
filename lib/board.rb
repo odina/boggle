@@ -3,12 +3,13 @@ class Board
 
   ALLOWED_CHARS = (("A".."Z").map.to_a + ["*"]).freeze
   BOARD_SIZE = 4 # 4x4 board only
+  BOARD_DIMENSIONS = BOARD_SIZE * BOARD_SIZE
   TEST_BOARD_FILE = "test_board.txt"
 
   def self.make_random_board_str
     chars = []
 
-    (BOARD_SIZE * BOARD_SIZE).times { chars << ALLOWED_CHARS[rand(ALLOWED_CHARS.size)] }
+    BOARD_DIMENSIONS.times { chars << ALLOWED_CHARS[rand(ALLOWED_CHARS.size)] }
 
     chars.join(", ")
   end
@@ -66,40 +67,56 @@ class Board
 
   def valid?(word)
     return false if word.empty?
-    word = word.downcase
-    letter = word[0]
+    return false if word.size > BOARD_DIMENSIONS
 
-    find_all_instances_of(letter).each do |x,y|
-      resp = search(BOGGLE_TREE[letter], word[1..-1], [x,y], [[x,y]])
+    resp = search(nil, word[0], word[1..-1], BOGGLE_TREE[word[0]], [])
 
-      return true if resp
-    end
-
-    return false
+    resp[:found] && resp[:is_word]
   end
 
-  def search(dict, word, pos, exclude_indices)
-    return true if word.empty? && dict.is_word?
+  def search(pos, curr_letter, rest_of_word, dict, exclude)
+    resp = { found: false, is_word: false }
 
-    letter = word[0]
-    rest_of_word = word[1..-1]
+    indices_of_curr_letter = []
 
-    neighbor_iter(*pos) do |nx, ny|
-      next if exclude_indices.member?([nx,ny])
-      neighbor = @state[nx][ny]
-      matched = neighbor == "*" || letter == neighbor.downcase
+    # if the word has just started, look for all instances of the first letter
+    if pos.nil?
+      indices_of_curr_letter = find_all_instances_of(curr_letter)
 
-      if matched
-        if new_dict = dict[letter]
-          if search(new_dict, rest_of_word, [nx,ny], exclude_indices.push([nx,ny]))
-            return true
-          else
-            exclude_indices.delete([nx,ny])
-          end
+    # otherwise, get all the neighbors of the current letter
+    else
+      neighbor_iter(*pos) do |x,y|
+        next if exclude.member?([x,y])
+
+        neighbor = @state[x][y]
+
+        if neighbor == "*" || curr_letter == neighbor.downcase
+          indices_of_curr_letter << [x,y]
         end
       end
     end
 
-    return false
+    # if this is the last letter, and the last letter is found as a neighbor, found!
+    if !indices_of_curr_letter.empty? && rest_of_word.empty?
+      return { found: true, is_word: dict && dict.is_word? }
+    end
+
+    # loop through all the letters, search for the remainder of the word recursively
+    indices_of_curr_letter.each do |x,y|
+      next_letter = rest_of_word[0]
+
+      # if the tree at the current letter is non-existent, this is not a word,
+      # so return { not_found, not_is_word }
+      if dict.nil?
+        return resp
+
+      elsif dict.keys.member?(next_letter)
+        resp = search([x,y], next_letter, rest_of_word[1..-1], dict[next_letter], exclude+[[x,y]])
+      end
+
+      return resp if resp[:found]
+    end
+
+    return resp
   end
 end
