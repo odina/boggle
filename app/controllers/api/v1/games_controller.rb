@@ -6,7 +6,7 @@ class Api::V1::GamesController < Api::BaseController
   end
 
   def create
-    @game = Game.new(game_params)
+    @game = Game.new(params)
 
     if @game.save
       render json: { success: true }
@@ -16,24 +16,20 @@ class Api::V1::GamesController < Api::BaseController
   end
 
   def update
-    render json: { method: "update" }
+    @game = Game.find_by(id: params[:id])
+
+    answer = PlayBoggle.call(game: @game, word: params[:word])
+
+    if answer.correct
+      render json: { success: true, message: "valid!"}
+    else
+      render json: { success: true, message: "INVALID!" }
+    end
   end
 
   def show
     @game = Game.find_by(id: params[:id])
 
-    resp = PlayBoggle.call(game: @game)
-
-    if resp.failure?
-      render json: { errors: resp.errors }
-    else
-      render json: { success: true, board: resp.board }
-    end
-  end
-
-  private
-
-  def game_params
-    params.permit(:duration, :random, :board)
+    render json: { game: @game }
   end
 end

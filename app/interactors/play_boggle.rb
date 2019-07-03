@@ -5,19 +5,9 @@ class PlayBoggle
     context.fail!(errors: "Game could not be found") unless game = context.game
     context.fail!(errors: "Game has expired") if game.expired?
 
-    board = make_board
-    context.board = board
+    board = Board.make_board_from_str(context.game.board)
+    puts "-- #{context.word}"
 
-    word = "eight" # TODO: example
-
-    board.valid?(word)
-  rescue # all
-    context.fail!(errors: "Failed to create board out of the game")
-  end
-
-  private
-
-  def make_board
-    Board.make_board_from_str(context.game.board)
+    context.correct = board.valid?(context.word)
   end
 end
