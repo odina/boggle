@@ -10,10 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_03_033323) do
+ActiveRecord::Schema.define(version: 2019_07_03_201432) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "game_results", force: :cascade do |t|
+    t.bigint "game_id"
+    t.text "found_words", default: [], array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id"], name: "index_game_results_on_game_id"
+  end
 
   create_table "games", force: :cascade do |t|
     t.string "token"
