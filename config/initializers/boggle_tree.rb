@@ -3,7 +3,7 @@ class BoggleTree
 
   def initialize
     @dict = Trie.new
-    file = "#{Rails.root}/config/dictionary.txt"
+    file = "#{Rails.root}/lib/dictionary.txt"
 
     File.open(file, 'r') do |f|
       f.each do |word|

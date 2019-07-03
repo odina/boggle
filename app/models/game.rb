@@ -4,6 +4,7 @@ class Game < ApplicationRecord
   validates_presence_of :duration
 
   before_create :generate_token
+  before_create :generate_board
 
   scope :fresh, -> { where("TIMESTAMPDIFF(SECOND, created_at, NOW()) < duration") }
   scope :expired, -> { where("TIMESTAMPDIFF(SECOND, created_at, NOW()) >= duration") }
@@ -32,5 +33,13 @@ class Game < ApplicationRecord
 
   def generate_token
     self.token = SecureRandom.hex
+  end
+
+  def generate_board
+    if random
+      self.board = Board.make_random_board
+    else
+      self.board ||= Board.make_test_board
+    end
   end
 end

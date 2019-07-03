@@ -1,5 +1,9 @@
 class Board
+  attr_accessor :state
+
+  ALLOWED_CHARS = (("A".."Z").map.to_a + ["*"]).freeze
   BOARD_SIZE = 4 # 4x4 board only
+  TEST_BOARD_FILE = "test_board.txt"
 
   def self.make_board_from_str(str)
     board_elements = str.split(/,\s*/).each_slice(BOARD_SIZE).to_a
@@ -7,7 +11,24 @@ class Board
     self.new(board_elements)
   end
 
-  attr_accessor :state
+  def self.make_random_board
+    chars = []
+
+    (BOARD_SIZE * BOARD_SIZE).times { chars << ALLOWED_CHARS[rand(ALLOWED_CHARS.size)] }
+
+    self.make_board_from_str(chars.join(","))
+  end
+
+  def self.make_test_board
+    file = "#{Rails.root}/lib/#{TEST_BOARD_FILE}"
+    str = nil
+
+    File.open(file, 'r').each do |line|
+      str = line
+    end
+
+    self.make_board_from_str(str)
+  end
 
   def initialize(state)
     @xmax = state.size
@@ -18,10 +39,6 @@ class Board
     end
 
     @state = state
-  end
-
-  def [](a, b)
-    @state[a][b]
   end
 
   def find_all_instances_of(letter)
@@ -68,7 +85,7 @@ class Board
 
     neighbor_iter(*pos) do |nx, ny|
       next if exclude_indices.member?([nx,ny])
-      neighbor = self[nx,ny]
+      neighbor = @state[nx][ny]
       matched = neighbor == "*" || letter == neighbor.downcase
 
       if matched
