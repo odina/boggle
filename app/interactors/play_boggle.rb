@@ -6,7 +6,6 @@ class PlayBoggle
     context.fail!(errors: "Game has expired") if game.expired?
 
     board = Board.make_board_from_str(context.game.board)
-    puts "-- #{context.word}"
 
     context.correct = board.valid?(context.word)
   end

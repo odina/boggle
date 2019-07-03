@@ -1,1 +1,17 @@
-= @presenter.game_overview
+= flash_messages
+
+- @presenter.board.state.each do |line|
+  div
+    - line.each do |letter|
+      span= letter
+
+br
+
+= form_tag game_path(@presenter.game.id), method: :put do
+  = hidden_field :game, :token, value: @presenter.game.token
+
+  .form-group
+    .input
+      = text_field :game, :word, value: ""
+
+  = submit_tag "Submit Word!"

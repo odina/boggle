@@ -6,7 +6,7 @@ class Api::V1::GamesController < Api::BaseController
   end
 
   def create
-    @game = Game.new(params)
+    @game = Game.new(create_game_params)
 
     if @game.save
       render json: { success: true }
@@ -31,5 +31,11 @@ class Api::V1::GamesController < Api::BaseController
     @game = Game.find_by(id: params[:id])
 
     render json: { game: @game }
+  end
+
+  private
+
+  def create_game_params
+    params.permit(:duration, :board, :random)
   end
 end

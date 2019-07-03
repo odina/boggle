@@ -7,6 +7,8 @@ class Board
     self.new(board_elements)
   end
 
+  attr_accessor :state
+
   def initialize(state)
     @xmax = state.size
     @ymax = state[0].size
@@ -50,7 +52,7 @@ class Board
     letter = word[0]
 
     find_all_instances_of(letter).each do |x,y|
-      resp = search(BOGGLE_TREE[letter], word[1..-1], [x,y], [x,y])
+      resp = search(BOGGLE_TREE[letter], word[1..-1], [x,y], [[x,y]])
 
       return true if resp
     end
@@ -67,10 +69,11 @@ class Board
     neighbor_iter(*pos) do |nx, ny|
       next if exclude_indices.member?([nx,ny])
       neighbor = self[nx,ny]
+      matched = neighbor == "*" || letter == neighbor.downcase
 
-      if neighbor == "*" || letter == neighbor.downcase
+      if matched
         if new_dict = dict[letter]
-          return true if search(new_dict, rest_of_word, [nx,ny], exclude_indices+[nx,ny])
+          return true if search(new_dict, rest_of_word, [nx,ny], exclude_indices.push([nx,ny]))
         end
       end
     end
