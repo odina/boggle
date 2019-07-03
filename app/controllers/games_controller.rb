@@ -1,16 +1,11 @@
 class GamesController < ApplicationController
   def index
-    # welcome
+    @presenter = GamePresenter.new(games: Game.fresh)
   end
 
   def show
     @game = Game.find_by(id: params[:id])
-
-    if @game
-      render plain: @game
-    else
-      render plain: "No game found!"
-    end
+    @presenter = GamePresenter.new(game: @game)
   end
 
   def update

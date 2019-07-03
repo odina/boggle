@@ -1,1 +1,8 @@
-| Hello, world!
+- @presenter.games.each do |game|
+  .game
+    .details
+      = game.id
+      = game.token
+
+    .link-to-play
+      = link_to "Play Game##{game.id}", game_path(game)
