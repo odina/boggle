@@ -18,17 +18,12 @@ class Api::V1::GamesController < Api::BaseController
   def update
     @game = Game.fresh.find_by_id_and_token(params[:id], params[:token])
 
-    if @game
-      answer = PlayBoggle.call(game: @game, word: params[:word])
+    answer = PlayBoggle.call(game: @game, word: params[:word])
 
-      if answer.correct
-        @game.points = params[:word].size # TODO: this shouldn't be hardcoded like this
-        render json: Games::UpdatedSerializer.new(@game).as_json, status: 200
-      else
-        render json: { message: "Word #{params[:word]} not found" }, status: 400
-      end
+    if answer.success?
+      render json: Games::UpdatedSerializer.new(@game).as_json, status: 200
     else
-      render json: { message: "Game cannot be found!" }, status: 400
+      render json: { message: answer.errors }, status: 400
     end
   end
 

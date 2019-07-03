@@ -1,5 +1,5 @@
 class Game < ApplicationRecord
-  attr_accessor :random, :points
+  attr_accessor :random
 
   validates_presence_of :duration, :random, on: :create
 

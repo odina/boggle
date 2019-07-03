@@ -21,13 +21,15 @@ class GamesController < ApplicationController
 
   def update
     @game = Game.find_by(id: params[:id])
-    @presenter = GamePresenter.new(game: @game)
-    @board = Board.make_board_from_str(@game.board)
 
-    if @board.valid?(game_params[:word])
-      flash[:success] = "Valid word #{params[:word]}"
+    answer = PlayBoggle.call(game: @game, word: game_params[:word])
+
+    @presenter = GamePresenter.new(game: @game)
+
+    if answer.success?
+      flash[:success] = "Good job! The word \"#{game_params[:word]}\" was found in the boggle."
     else
-      flash[:error] = "Couldn't find word #{params[:word]} in boggle"
+      flash[:error] = answer.errors
     end
 
     render :show
@@ -36,6 +38,6 @@ class GamesController < ApplicationController
   private
 
   def game_params
-    params[:game].permit(:token, :word)
+    params[:game].permit(:id, :token, :word)
   end
 end
