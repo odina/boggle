@@ -16,7 +16,7 @@ class Api::V1::GamesController < Api::BaseController
   end
 
   def update
-    @game = Game.fresh.find_by(id: params[:id])
+    @game = Game.fresh.find_by_id_and_token(params[:id], params[:token])
 
     if @game
       answer = PlayBoggle.call(game: @game, word: params[:word])
@@ -28,7 +28,7 @@ class Api::V1::GamesController < Api::BaseController
         render json: { message: "Word #{params[:word]} not found" }, status: 400
       end
     else
-      render json: { message: "Game cannot be found! It might have expired already" }, status: 400
+      render json: { message: "Game cannot be found!" }, status: 400
     end
   end
 
