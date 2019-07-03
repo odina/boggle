@@ -4,7 +4,13 @@ class GamesController < ApplicationController
   end
 
   def show
-    # show game with button "Play"
+    @game = Game.find_by(id: params[:id])
+
+    if @game
+      render plain: @game
+    else
+      render plain: "No game found!"
+    end
   end
 
   def update

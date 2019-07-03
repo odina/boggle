@@ -2,7 +2,7 @@ class Api::V1::GamesController < Api::BaseController
   skip_before_action :verify_authenticity_token
 
   def index
-    render json: { meth: "index" }
+    render json: { method: "index" }
   end
 
   def create
@@ -16,16 +16,18 @@ class Api::V1::GamesController < Api::BaseController
   end
 
   def update
-    render json: { meth: "update" }
+    render json: { method: "update" }
   end
 
   def show
     @game = Game.find_by(id: params[:id])
 
-    if @game
-      render json: { game: @game }
+    resp = PlayBoggle.call(game: @game)
+
+    if resp.failure?
+      render json: { errors: resp.errors }
     else
-      render json: { errors: "No such game found!" }
+      render json: { success: true, board: resp.board }
     end
   end
 
