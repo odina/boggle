@@ -31,6 +31,10 @@ class Game < ApplicationRecord
     end
   end
 
+  def points
+    game_results.map(&:points).inject(&:+) || 0
+  end
+
   private
 
   def generate_token

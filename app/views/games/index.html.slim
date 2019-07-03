@@ -3,12 +3,16 @@
     - @presenter.games.each do |game|
       .game
         .detail
+          .label Board:
+          .content= game.board
+
+        .detail
           .label Time left:
           .content= humanize_duration(game.time_left)
 
         .detail
-          .label Board:
-          .content= game.board
+          .label Points:
+          .content= game.points
 
         .link-to-play
           = link_to "Play!", game_path(game.id)
