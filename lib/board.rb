@@ -5,29 +5,29 @@ class Board
   BOARD_SIZE = 4 # 4x4 board only
   TEST_BOARD_FILE = "test_board.txt"
 
-  def self.make_board_from_str(str)
-    board_elements = str.split(/,\s*/).each_slice(BOARD_SIZE).to_a
-
-    self.new(board_elements)
-  end
-
-  def self.make_random_board
+  def self.make_random_board_str
     chars = []
 
     (BOARD_SIZE * BOARD_SIZE).times { chars << ALLOWED_CHARS[rand(ALLOWED_CHARS.size)] }
 
-    self.make_board_from_str(chars.join(","))
+    chars.join(", ")
   end
 
-  def self.make_test_board
+  def self.make_test_board_str
     file = "#{Rails.root}/lib/#{TEST_BOARD_FILE}"
     str = nil
 
     File.open(file, 'r').each do |line|
-      str = line
+      str = line.chomp
     end
 
-    self.make_board_from_str(str)
+    str
+  end
+
+  def self.make_board_from_str(str)
+    board_elements = str.split(/,\s*/).each_slice(BOARD_SIZE).to_a
+
+    self.new(board_elements)
   end
 
   def initialize(state)

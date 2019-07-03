@@ -1,7 +1,7 @@
 class Game < ApplicationRecord
-  attr_accessor :random
+  attr_accessor :random, :points
 
-  validates_presence_of :duration
+  validates_presence_of :duration, :random
 
   before_create :generate_token
   before_create :generate_board
@@ -36,10 +36,10 @@ class Game < ApplicationRecord
   end
 
   def generate_board
-    if random
-      self.board = Board.make_random_board
-    else
-      self.board ||= Board.make_test_board
+    if ActiveModel::Type::Boolean.new.cast(random)
+      self.board = Board.make_random_board_str
     end
+
+    self.board ||= Board.make_test_board_str
   end
 end

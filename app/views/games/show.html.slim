@@ -1,5 +1,10 @@
 = flash_messages
 
+div
+  span Time Left:
+  span &nbsp;
+  span= @presenter.game_overview[:time_left]
+
 - @presenter.board.state.each do |line|
   div
     - line.each do |letter|
