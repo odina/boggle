@@ -15,3 +15,23 @@
  */
 
 @import "bootstrap";
+@import "pages/**/*";
+
+body {
+  .header {
+    background: #ffdc89;
+
+    .logo {
+      padding: 15px;
+
+      img {
+        height: 50px;
+      }
+    }
+  }
+
+  .main {
+    font-size: 14px;
+    padding: 10px;
+  }
+}

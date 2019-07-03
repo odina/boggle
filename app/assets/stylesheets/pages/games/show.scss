@@ -1,0 +1,57 @@
+.games.show {
+  .time-left {
+    .label {
+      font-weight: bold;
+    }
+
+    > div {
+      display: inline-block;
+      margin-right: 5px;
+    }
+  }
+
+  .board {
+    margin-top: 15px;
+
+    .line {
+      .letter {
+        border: 1px solid #ccc;
+        border-bottom: 0;
+        border-right: 0;
+        display: inline-block;
+        font-weight: bold;
+        padding: 8px;
+        text-align: center;
+        width: 50px;
+
+        &:last-child {
+          border-right: 1px solid #ccc;
+        }
+      }
+
+      &:last-child {
+        .letter {
+          border-bottom: 1px solid #ccc;
+        }
+      }
+    }
+  }
+
+  .form {
+    margin-top: 15px;
+
+    input {
+      padding: 8px 15px;
+      outline: none;
+    }
+
+    .submit-btn {
+      margin-left: 8px;
+    }
+
+    .input,
+    .submit-btn {
+      display: inline-block;
+    }
+  }
+}

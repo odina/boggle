@@ -6,6 +6,10 @@ class GamePresenter
     @game = game
   end
 
+  def has_games?
+    @games && @games.any?
+  end
+
   def game_overview
     { id: @game.id, token: @game.token, time_left: "#{@game.time_left.round(2)} seconds" }
   end

@@ -1,8 +1,13 @@
-- @presenter.games.each do |game|
-  .game
-    .details
-      = game.id
-      = game.token
+.games.index
+  - if @presenter.has_games?
+    - @presenter.games.each do |game|
+      .game
+        .detail
+          .label Time left:
+          .content= humanize_duration(game.time_left)
 
-    .link-to-play
-      = link_to "Play Game##{game.id}", game_path(game)
+        .link-to-play
+          = link_to "Play!", game_path(game.id)
+  - else
+    .no-games
+      | No active games yet! Try creating one via the API.

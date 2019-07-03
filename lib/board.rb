@@ -65,6 +65,7 @@ class Board
   end
 
   def valid?(word)
+    return false if word.empty?
     word = word.downcase
     letter = word[0]
 

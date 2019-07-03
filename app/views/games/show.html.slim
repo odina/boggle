@@ -1,22 +1,20 @@
-= flash_messages
+.games.show
+  .time-left
+    .label Time Left:
+    .content= humanize_duration(@presenter.game.time_left)
 
-div
-  span Time Left:
-  span &nbsp;
-  span= @presenter.game_overview[:time_left]
+  .board
+    - @presenter.board.state.each do |line|
+      .line
+        - line.each do |letter|
+          .letter= letter
 
-- @presenter.board.state.each do |line|
-  div
-    - line.each do |letter|
-      span= letter
+  .form
+    = form_tag game_path(@presenter.game.id), method: :put do
+      = hidden_field :game, :token, value: @presenter.game.token
 
-br
+      .input
+        = text_field :game, :word, value: ""
 
-= form_tag game_path(@presenter.game.id), method: :put do
-  = hidden_field :game, :token, value: @presenter.game.token
-
-  .form-group
-    .input
-      = text_field :game, :word, value: ""
-
-  = submit_tag "Submit Word!"
+      .submit-btn
+        = submit_tag "Submit Word!"

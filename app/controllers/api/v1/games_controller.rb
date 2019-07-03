@@ -16,15 +16,19 @@ class Api::V1::GamesController < Api::BaseController
   end
 
   def update
-    @game = Game.find_by(id: params[:id])
+    @game = Game.fresh.find_by(id: params[:id])
 
-    answer = PlayBoggle.call(game: @game, word: params[:word])
+    if @game
+      answer = PlayBoggle.call(game: @game, word: params[:word])
 
-    if answer.correct
-      @game.points = params[:word].size # TODO: this shouldn't be hardcoded like this
-      render json: Games::UpdatedSerializer.new(@game).as_json, status: 200
+      if answer.correct
+        @game.points = params[:word].size # TODO: this shouldn't be hardcoded like this
+        render json: Games::UpdatedSerializer.new(@game).as_json, status: 200
+      else
+        render json: { message: "Word #{params[:word]} not found" }, status: 400
+      end
     else
-      render json: { message: "Word #{params[:word]} not found" }, status: 400
+      render json: { message: "Game cannot be found! It might have expired already" }, status: 400
     end
   end
 

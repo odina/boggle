@@ -1,0 +1,29 @@
+.games.index {
+  .no-games {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+  }
+
+  .game {
+    border: 1px solid #cccccc;
+    padding: 8px;
+    text-align: center;
+    margin-top: 8px;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .detail {
+      .label {
+        font-weight: bold;
+      }
+
+      > div {
+        display: inline-block;
+        padding-right: 5px;
+      }
+    }
+  }
+}

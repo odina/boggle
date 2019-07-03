@@ -5,7 +5,18 @@ class GamesController < ApplicationController
 
   def show
     @game = Game.find_by(id: params[:id])
-    @presenter = GamePresenter.new(game: @game)
+
+    if @game
+      if @game.fresh?
+        @presenter = GamePresenter.new(game: @game)
+      else
+        flash[:error] = "Game has expired!"
+        redirect_to games_path
+      end
+    else
+      flash[:error] = "Game not found!"
+      redirect_to games_path
+    end
   end
 
   def update

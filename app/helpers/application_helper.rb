@@ -23,4 +23,8 @@ module ApplicationHelper
       notice: "alert-info"
     }[flash_type.to_sym]
   end
+
+  def humanize_duration(seconds_left)
+    Time.at(seconds_left).utc.strftime("%H:%M:%S")
+  end
 end
