@@ -10,6 +10,34 @@
 5. Run `bin/rails server`
 ```
 
+### Rough overview of structure and files:
+
+#### Files
+
+```
+- BOGGLE_TREE is declared in config/initializers/boggle_tree.rb This gives the global
+  constant BOGGLE_TREE, which is a hash of all the valid words in lib/dictionary.txt
+  e.g.
+       d
+     / |
+    a  o
+   /   |\
+  d    g o
+          \
+           r
+- Board logic is housed inside lib/board.rb
+- Everytime a word is searched for a game, a board is created, and the search algorithm
+  is run for the existence of the word on the board as well as the existence of the word
+  in the dictionary.txt file
+```
+
+#### Structure
+
+```
+- app/interactors - Added play_boggle.rb to this folder because this is a business logic
+                  - interactors taken from brilliant gem https://github.com/collectiveidea/interactor
+```
+
 ### Running tests
 
 ```
