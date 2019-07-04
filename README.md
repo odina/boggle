@@ -45,12 +45,13 @@
 2. Run `rspec -fd spec` to run the full test suite
 ```
 
-### Caveats
+### TODO
 
 ```
-- API has no security yet, accepts all incoming requests
 - `found_words` inside game_results is limited to the max size of `text`, about
   30,000 characters. Decided to go this route to simplify the db structure.
+- Needs minimum proper authentication (client registration + token maybe), for now
+  only set to basic auth
 ```
 
 ### Accessing the app in live
@@ -59,22 +60,24 @@
 
 ### Accessing API in live
 
+##### NOTE: I added basic auth for the API calls (production only), will provide the username and password in a separate email
+
 #### POST /games
 
 ```
-curl -X POST 'https://nameless-wildwood-56391.herokuapp.com/api/v1/games' -d 'duration=7200' -d 'random=true'
+curl -X POST 'https://nameless-wildwood-56391.herokuapp.com/api/v1/games' -d 'duration=7200' -d 'random=true' -u username:password
 ```
 
 #### GET /games/:id
 
 ```
-curl -X GET 'https://nameless-wildwood-56391.herokuapp.com/api/v1/games/1'
+curl -X GET 'https://nameless-wildwood-56391.herokuapp.com/api/v1/games/1' -u username:password
 ```
 
 #### PUT /games/:id
 
 ```
-curl -X PUT 'https://nameless-wildwood-56391.herokuapp.com/api/v1/games/1' -d 'word=yacht' -d 'token=24564478e7387f1cfa02c228893c54cc'
+curl -X PUT 'https://nameless-wildwood-56391.herokuapp.com/api/v1/games/1' -d 'word=yacht' -d 'token=24564478e7387f1cfa02c228893c54cc' -u username:password
 ```
 
 ### Architecture used

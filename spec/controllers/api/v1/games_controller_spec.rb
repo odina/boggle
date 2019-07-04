@@ -2,6 +2,12 @@ require 'spec_helper'
 require 'json'
 
 RSpec.describe Api::V1::GamesController, type: :controller do
+  include AuthHelper
+
+  before(:each) do
+    http_login
+  end
+
   def assert_error(response, status)
     expect(response.code.to_i).to eq status
     json = JSON.parse(response.body)
