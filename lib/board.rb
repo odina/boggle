@@ -26,17 +26,22 @@ class Board
   end
 
   def self.make_board_from_str(str)
-    board_elements = str.split(/,\s*/).each_slice(BOARD_SIZE).to_a
+    board_elements = str.gsub(/[^a-zA-Z\*]+/, '').split("").each_slice(BOARD_SIZE).to_a
 
     self.new(board_elements)
   end
 
-  def initialize(state)
+  def initialize(state, boggle_tree=BOGGLE_TREE)
+    @boggle_tree = boggle_tree
     @xmax = state.size
     @ymax = state[0].size
 
     state.each do |row|
       raise "Board rows are of varying lengths" if row.size != @ymax
+    end
+
+    if (@xmax * @ymax != BOARD_DIMENSIONS)
+      raise "Board is not of the right dimensions"
     end
 
     @state = state
@@ -69,7 +74,7 @@ class Board
     return false if word.empty?
     return false if word.size > BOARD_DIMENSIONS
 
-    resp = search(nil, word[0], word[1..-1], BOGGLE_TREE[word[0]], [])
+    resp = search(nil, word[0], word[1..-1], @boggle_tree[word[0]], [])
 
     resp[:found] && resp[:is_word]
   end
