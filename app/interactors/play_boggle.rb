@@ -5,7 +5,13 @@ class PlayBoggle
     context.fail!(errors: "Game could not be found!") unless game = context.game
     context.fail!(errors: "Game has expired!", redirect: true) if game.expired?
 
-    board = Board.make_board_from_str(context.game.board)
+    begin
+      board = Board.make_board_from_str(context.game.board)
+    rescue Board::BoardOfVaryingLengthsError,
+           Board::BoardNotRightDimensionsError => e
+      context.fail!(errors: e.message)
+    end
+
     valid = false
 
     if board.valid?(context.word)

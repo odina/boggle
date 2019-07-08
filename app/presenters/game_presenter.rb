@@ -1,13 +1,19 @@
 class GamePresenter
-  attr_accessor :games, :game, :board
+  attr_accessor :games, :game, :board, :errors
 
   def initialize(games:nil, game:nil)
     @games = games
     @game = game
+    @errors = nil
+    @board = board
   end
 
   def has_games?
     @games && @games.any?
+  end
+
+  def has_errors?
+    !!@errors
   end
 
   def game_overview
@@ -16,7 +22,13 @@ class GamePresenter
 
   def board
     @game ||= @games.first
-    @board = Board.make_board_from_str(@game.board)
+
+    begin
+      @board = Board.make_board_from_str(@game.board)
+    rescue Board::BoardOfVaryingLengthsError,
+           Board::BoardNotRightDimensionsError => e
+      @errors = e.message
+    end
   end
 
   def points

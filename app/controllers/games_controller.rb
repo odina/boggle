@@ -24,9 +24,9 @@ class GamesController < ApplicationController
 
     answer = PlayBoggle.call(game: @game, word: game_params[:word])
 
-    @presenter = GamePresenter.new(game: @game)
-
     if answer.success?
+      @presenter = GamePresenter.new(game: @game)
+
       flash[:success] = "Good job! The word \"#{game_params[:word]}\" was found in the boggle."
     else
       flash[:error] = answer.errors

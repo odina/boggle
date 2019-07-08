@@ -6,6 +6,14 @@ class Board
   BOARD_DIMENSIONS = BOARD_SIZE * BOARD_SIZE
   TEST_BOARD_FILE = "test_board.txt"
 
+  class BoardNotRightDimensionsError < StandardError
+    def message; "Board is not of the right dimensions!"; end
+  end
+
+  class BoardOfVaryingLengthsError < StandardError
+    def message; "Board is of varying lengths!"; end
+  end
+
   def self.make_random_board_str
     chars = []
 
@@ -37,11 +45,11 @@ class Board
     @ymax = state[0].size
 
     state.each do |row|
-      raise "Board rows are of varying lengths" if row.size != @ymax
+      raise BoardOfVaryingLengthsError if row.size != @ymax
     end
 
     if (@xmax * @ymax != BOARD_DIMENSIONS)
-      raise "Board is not of the right dimensions"
+      raise BoardNotRightDimensionsError
     end
 
     @state = state

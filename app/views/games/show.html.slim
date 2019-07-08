@@ -1,24 +1,27 @@
 .games.show
-  .time-left.game-detail
-    .label Time Left:
-    .content= humanize_duration(@presenter.game.time_left)
+  - if @presenter.has_errors?
+    b= @presenter.errors
+  - else
+    .time-left.game-detail
+      .label Time Left:
+      .content= humanize_duration(@presenter.game.time_left)
 
-  .score.game-detail
-    .label Points:
-    .content= @presenter.points
+    .score.game-detail
+      .label Points:
+      .content= @presenter.points
 
-  .board
-    - @presenter.board.state.each do |line|
-      .line
-        - line.each do |letter|
-          .letter= letter
+    .board
+      - @presenter.board.state.each do |line|
+        .line
+          - line.each do |letter|
+            .letter= letter
 
-  .form
-    = form_tag game_path(@presenter.game.id), method: :put do
-      = hidden_field :game, :token, value: @presenter.game.token
+    .form
+      = form_tag game_path(@presenter.game.id), method: :put do
+        = hidden_field :game, :token, value: @presenter.game.token
 
-      .input
-        = text_field :game, :word, value: ""
+        .input
+          = text_field :game, :word, value: ""
 
-      .submit-btn
-        = submit_tag "Submit Word!"
+        .submit-btn
+          = submit_tag "Submit Word!"

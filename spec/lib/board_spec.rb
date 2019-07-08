@@ -15,7 +15,11 @@ RSpec.describe Board do
   end
 
   it "throws an error if board string is not BOARD_SIZE * BOARD_SIZE" do
-    expect { board = Board.make_board_from_str("A, B, C, D") }.to raise_error(RuntimeError)
+    expect { board = Board.make_board_from_str("A, B, C, D") }.to raise_error(Board::BoardNotRightDimensionsError)
+  end
+
+  it "throws an error if board string is of varying lengths" do
+    expect { board = Board.make_board_from_str("A, B, C, D, E") }.to raise_error(Board::BoardOfVaryingLengthsError)
   end
 
   it "is able to create a random board string" do
