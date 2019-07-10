@@ -5,7 +5,7 @@ class GamePresenter
     @games = games
     @game = game
     @errors = nil
-    @board = board
+    @board = board unless @games || @game
   end
 
   def has_games?

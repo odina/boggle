@@ -21,12 +21,11 @@ class GamesController < ApplicationController
 
   def update
     @game = Game.find_by(id: params[:id])
+    @presenter = GamePresenter.new(game: @game)
 
     answer = PlayBoggle.call(game: @game, word: game_params[:word])
 
     if answer.success?
-      @presenter = GamePresenter.new(game: @game)
-
       flash[:success] = "Good job! The word \"#{game_params[:word]}\" was found in the boggle."
     else
       flash[:error] = answer.errors
