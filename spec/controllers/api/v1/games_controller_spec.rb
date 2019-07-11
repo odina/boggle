@@ -127,4 +127,45 @@ RSpec.describe Api::V1::GamesController, type: :controller do
     response = get(:show, params: { id: -1 })
     assert_error(response, 404)
   end
+
+  it 'makes a board with character Qu playable' do
+    duration = 100
+
+    board = <<-BOARD
+      Qu, C, E, D,
+      L, *, G, *,
+      E, *, H, T,
+      G, A, F, K
+    BOARD
+
+    response = post(:create, params: { random: false, duration: duration, board: board })
+    game = JSON.parse(response.body)
+
+    response = put(:update, params: { id: game['id'], token: game['token'], word: 'quote' })
+    json = JSON.parse(response.body)
+
+    expect(json['id']).to eq game['id']
+    expect(json['token']).to eq game['token']
+    expect(json['board']).to eq game['board']
+    expect(json['points']).to eq 5
+    expect(json).to have_key('time_left')
+  end
+
+  it 'fails when trying to play a boggle with invalid character' do
+    duration = 100
+
+    board = <<-BOARD
+      Wrong, C, E, D,
+      L, *, G, *,
+      E, *, H, T,
+      G, A, F, K
+    BOARD
+
+    response = post(:create, params: { random: false, duration: duration, board: board })
+    game = JSON.parse(response.body)
+
+    response = put(:update, params: { id: game['id'], token: game['token'], word: 'quote' })
+
+    assert_not_success(response)
+  end
 end

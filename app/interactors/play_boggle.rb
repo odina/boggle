@@ -8,6 +8,7 @@ class PlayBoggle
     begin
       board = Board.make_board_from_str(context.game.board)
     rescue Board::BoardOfVaryingLengthsError,
+           Board::BoardHasInvalidCharacters,
            Board::BoardNotRightDimensionsError => e
       context.fail!(errors: e.message)
     end

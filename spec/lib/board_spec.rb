@@ -9,6 +9,7 @@ RSpec.describe Board do
 
   it "is able to create a board out of a given string" do
     board_str = (["a", "b", "c", "d"] * 4).join(",")
+
     board = Board.make_board_from_str(board_str)
 
     expect(board.state.size).to eq(4)
@@ -24,10 +25,9 @@ RSpec.describe Board do
 
   it "is able to create a random board string" do
     str = Board.make_random_board_str
-    str = str.gsub(/,\s+/,'')
     board_size = Board::BOARD_DIMENSIONS
 
-    expect(str.size).to eq(board_size)
+    expect(str.split(",").size).to eq(board_size)
   end
 
   it "is able to create a test string" do
@@ -39,10 +39,10 @@ RSpec.describe Board do
   describe "valid?" do
     before(:each) do
       board_str = <<-BOARD
-        D A D B
-        O G X Y
-        O * R K
-        N G H T
+        D, A, D, B,
+        O, G, X, Y,
+        O, *, R, K,
+        N, G, H, T
       BOARD
 
       @board = Board.make_board_from_str(board_str)

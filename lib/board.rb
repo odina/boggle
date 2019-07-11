@@ -1,7 +1,7 @@
 class Board
   attr_accessor :state
 
-  ALLOWED_CHARS = (("A".."Z").map.to_a + ["*"]).freeze
+  ALLOWED_CHARS = (("A".."Z").map.to_a  - ["Q"] + ["QU", "*"]).freeze
   BOARD_SIZE = 4 # 4x4 board only
   BOARD_DIMENSIONS = BOARD_SIZE * BOARD_SIZE
   TEST_BOARD_FILE = "test_board.txt"
@@ -12,6 +12,10 @@ class Board
 
   class BoardOfVaryingLengthsError < StandardError
     def message; "Board is of varying lengths!"; end
+  end
+
+  class BoardHasInvalidCharacters < StandardError
+    def message; "Board contains invalid characters!"; end
   end
 
   def self.make_random_board_str
@@ -34,7 +38,7 @@ class Board
   end
 
   def self.make_board_from_str(str)
-    board_elements = str.gsub(/[^a-zA-Z\*]+/, '').split("").each_slice(BOARD_SIZE).to_a
+    board_elements = str.gsub(/([^a-zA-Z\*,])+/, '').split(",").each_slice(BOARD_SIZE).to_a
 
     self.new(board_elements)
   end
@@ -46,6 +50,7 @@ class Board
 
     state.each do |row|
       raise BoardOfVaryingLengthsError if row.size != @ymax
+      row.each { |e| raise BoardHasInvalidCharacters unless ALLOWED_CHARS.include?(e.upcase)}
     end
 
     if (@xmax * @ymax != BOARD_DIMENSIONS)
@@ -82,7 +87,11 @@ class Board
     return false if word.empty?
     return false if word.size > BOARD_DIMENSIONS
 
-    resp = search(nil, word[0], word[1..-1], @boggle_tree[word[0]], [])
+    trie = @boggle_tree
+    first_letter, rest_of_word = split_first_letter_from_word(word)
+    first_letter.split("").each { |l| trie = trie[l.downcase] }
+
+    resp = search(nil, first_letter, rest_of_word, trie, [])
 
     resp[:found] && resp[:is_word]
   end
@@ -109,27 +118,46 @@ class Board
       end
     end
 
-    # if this is the last letter, and the last letter is found as a neighbor, found!
+    # if this is the 2nd to the last letter, and the last letter is found as a neighbor, found!
     if !indices_of_curr_letter.empty? && rest_of_word.empty?
       return { found: true, is_word: dict && dict.is_word? }
     end
 
     # loop through all the letters, search for the remainder of the word recursively
     indices_of_curr_letter.each do |x,y|
-      next_letter = rest_of_word[0]
+      next_letter, next_rest_of_word = split_first_letter_from_word(rest_of_word)
 
       # if the tree at the current letter is non-existent, this is not a word,
       # so return { not_found, not_is_word }
       if dict.nil?
         return resp
 
-      elsif dict.keys.member?(next_letter)
-        resp = search([x,y], next_letter, rest_of_word[1..-1], dict[next_letter], exclude+[[x,y]])
+      else
+        trie = dict
+        next_letter.split("").each { |x| trie = trie[x.downcase] }
+
+        if trie
+          resp = search([x,y], next_letter, next_rest_of_word, trie, exclude+[[x,y]])
+        end
       end
 
       return resp if resp[:found]
     end
 
     return resp
+  end
+
+  def split_first_letter_from_word(word)
+    first_letter = word[0]
+    rest_of_word = word[1..-1]
+
+    if word[0].downcase == "q"
+      if word[1] && word[1].downcase == "u"
+        first_letter = "qu"
+        rest_of_word = word[2..-1]
+      end
+    end
+
+    [first_letter, rest_of_word]
   end
 end
